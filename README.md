@@ -32,6 +32,12 @@ View the Live Site
 2. Open `index.html` in any modern web browser.
 3. To use the AI features, enter your Gemini API Key in the input field at the bottom of the page.
 
+Note: This repository does not include a preconfigured API key. You must sign up with the provider and create an API key yourself (signup may be required). For a quick test:
+
+- Visit https://aistudio.google.com or your cloud provider's console.
+- Create or retrieve a Gemini (or compatible) API key.
+- Paste the key into the `Gemini API Key` field on the site and then run the AI tools.
+
 📦 Deployment
 
 This project is designed for GitHub Pages.
