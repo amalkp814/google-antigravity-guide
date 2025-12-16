@@ -4,7 +4,7 @@ A responsive, single-page infographic guide designed to help developers navigate
 
 Live Demo
 
-> Replace the link below after you enable GitHub Pages
+> [google-antigravity-guide](https://amalkp814.github.io/google-antigravity-guide/)
 
 View the Live Site
 
