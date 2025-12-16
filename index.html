@@ -1,267 +1,377 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Antigravity: The Safe Coding Handbook</title>
+    <title>Google Antigravity | The Architect's Handbook</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        slate: {
+                            850: '#151e2e',
+                            900: '#0f172a',
+                            950: '#020617',
+                        },
+                        neon: {
+                            blue: '#38bdf8',
+                            purple: '#c084fc',
+                            pink: '#f472b6',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.8s ease-out forwards',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        /* Palette: Cyber Blue / Developer Dark Mode */
-        body {
-            background-color: #0f172a;
-            color: #f8fafc;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        /* Modern Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+        /* Glassmorphism Utilities */
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         }
         
+        .glass-panel-hover:hover {
+            background: rgba(30, 41, 59, 0.6);
+            border-color: rgba(56, 189, 248, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px -10px rgba(56, 189, 248, 0.15);
+        }
+
+        /* Background Grid Pattern */
+        .bg-grid {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            mask-image: radial-gradient(circle at center, black, transparent 80%);
+        }
+
+        /* Chart Container */
         .chart-container {
             position: relative;
             width: 100%;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 350px;
-            max-height: 400px;
-        }
-
-        /* Timeline styling */
-        .timeline-line {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 4px;
             height: 100%;
-            background-color: #334155;
-            z-index: 0;
+            min-height: 300px;
         }
         
-        .timeline-dot {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background-color: #22d3ee;
-            border: 4px solid #0f172a;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-        }
-
-        @media (max-width: 768px) {
-            .timeline-line {
-                left: 20px;
-            }
-            .timeline-dot {
-                left: 20px;
-            }
-        }
-        
-        /* Custom scrollbar for output areas */
-        .custom-scroll::-webkit-scrollbar {
-            width: 8px;
-        }
-        .custom-scroll::-webkit-scrollbar-track {
-            background: #1e293b; 
-        }
-        .custom-scroll::-webkit-scrollbar-thumb {
-            background: #475569; 
-            border-radius: 4px;
-        }
-        .custom-scroll::-webkit-scrollbar-thumb:hover {
-            background: #64748b; 
-        }
+        /* Console Scroll */
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
     </style>
-    <!-- 
-      Source Analysis: Guide for Google Antigravity IDE (Safety, Consistency, Accuracy).
-      Visualizations: Bar Chart, Radar Chart, Donut Chart, Timeline.
-      AI Features: Risk Analyzer, Agent Planner.
-      Constraint Check: NO SVG used. NO Mermaid used. All Chart.js.
-    -->
 </head>
-<body class="antialiased selection:bg-cyan-500 selection:text-white pb-20">
+<body class="bg-slate-950 text-slate-100 font-sans antialiased overflow-x-hidden">
 
-    <!-- Hero Section -->
-    <header class="bg-gradient-to-r from-slate-900 to-slate-800 border-b border-slate-700 py-16 px-6">
-        <div class="max-w-6xl mx-auto text-center">
-            <h1 class="text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-400 mb-6 tracking-tight">
-                GOOGLE ANTIGRAVITY
-            </h1>
-            <p class="text-xl md:text-2xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
-                The Safe Coding Handbook for the Agent-First Era. <br>
-                Master autonomy, enforce consistency, and ensure accuracy in your IDE.
-            </p>
+    <!-- Ambient Background Glow -->
+    <div class="fixed inset-0 z-0 pointer-events-none">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-[128px]"></div>
+        <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-[128px]"></div>
+        <div class="absolute inset-0 bg-grid"></div>
+    </div>
+
+    <!-- Navigation (Simple/Floating) -->
+    <nav class="fixed top-0 w-full z-50 border-b border-white/5 bg-slate-950/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+                <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                <span class="ml-3 font-mono font-bold text-sm tracking-widest text-slate-400">ANTIGRAVITY.GUIDE</span>
+            </div>
+            <a href="https://github.com/amalkp814" target="_blank" class="text-xs font-mono text-slate-500 hover:text-white transition-colors">v1.0.2</a>
         </div>
-    </header>
+    </nav>
 
-    <main class="max-w-7xl mx-auto px-6 py-12 space-y-24">
+    <main class="relative z-10 max-w-7xl mx-auto px-6 pt-32 pb-24 space-y-32">
 
-        <!-- Section 1: Introduction & The Core Risk -->
-        <section class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div class="order-2 md:order-1">
-                <div class="bg-slate-800 rounded-2xl p-8 shadow-xl border border-slate-700 hover:border-cyan-500/50 transition-colors">
-                    <h2 class="text-3xl font-bold text-cyan-400 mb-4">The Agent-First Paradigm</h2>
-                    <p class="text-slate-300 mb-6 leading-relaxed">
-                        Antigravity represents a shift from writing code to <strong>managing agents</strong>. While powerful, autonomous agents introduce risks: accidental file deletion, hallucinated dependencies, and "lazy" coding. 
-                    </p>
-                    <p class="text-slate-300 leading-relaxed border-l-4 border-violet-500 pl-4">
-                        To succeed, developers must transition from "Coders" to "Architects," strictly controlling the agent's environment and permissions to prevent destructive actions.
-                    </p>
-                </div>
+        <!-- Hero Section -->
+        <header class="text-center space-y-8 animate-fade-in">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-mono mb-4">
+                <span class="relative flex h-2 w-2">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                </span>
+                Agent-First Era Protocol
             </div>
-            <div class="order-1 md:order-2 flex flex-col justify-center text-center">
-                <div class="text-9xl font-black text-slate-800 relative z-0 select-none opacity-50">
-                    IDE
-                </div>
-                <div class="relative z-10 -mt-16">
-                    <span class="text-6xl font-bold text-white drop-shadow-[0_0_15px_rgba(34,211,238,0.5)]">Safety First</span>
-                    <p class="mt-4 text-violet-300 text-lg uppercase tracking-widest font-semibold">Control the Autonomy</p>
-                </div>
+            
+            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight leading-tight">
+                Stop Coding.<br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-blue via-neon-purple to-neon-pink">Start Architecting.</span>
+            </h1>
+            
+            <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
+                Google Antigravity shifts the paradigm. Your job is no longer to write loops, but to <span class="text-white font-semibold">orchestrate agents</span> safely.
+            </p>
+
+            <div class="flex flex-col md:flex-row gap-4 justify-center mt-8">
+                <a href="#tools" class="px-8 py-3 rounded-lg bg-white text-slate-950 font-bold hover:scale-105 transition-transform shadow-[0_0_20px_rgba(255,255,255,0.3)]">Launch Tools</a>
+                <a href="#safety" class="px-8 py-3 rounded-lg glass-panel text-white hover:bg-white/10 transition-colors">Read Guidelines</a>
+            </div>
+        </header>
+
+        <!-- Stats / Overview Grid -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in" style="animation-delay: 0.2s">
+            <div class="glass-panel p-8 rounded-2xl glass-panel-hover transition-all duration-300">
+                <div class="text-neon-blue mb-4 text-4xl"><i class="font-mono">~/</i></div>
+                <h3 class="text-xl font-bold mb-2">Safety</h3>
+                <p class="text-sm text-slate-400 leading-relaxed">Prevent <code class="bg-white/10 px-1 rounded text-red-400">rm -rf</code> disasters by strictly controlling Terminal Permissions.</p>
+            </div>
+            <div class="glass-panel p-8 rounded-2xl glass-panel-hover transition-all duration-300">
+                <div class="text-neon-purple mb-4 text-4xl">⌘</div>
+                <h3 class="text-xl font-bold mb-2">Consistency</h3>
+                <p class="text-sm text-slate-400 leading-relaxed">Abandon "Fast Mode." Force agents to Plan, Think, and Architect before execution.</p>
+            </div>
+            <div class="glass-panel p-8 rounded-2xl glass-panel-hover transition-all duration-300">
+                <div class="text-neon-pink mb-4 text-4xl">◉</div>
+                <h3 class="text-xl font-bold mb-2">Accuracy</h3>
+                <p class="text-sm text-slate-400 leading-relaxed">Don't trust text logs. Verify with generated Artifacts and Browser Screenshots.</p>
             </div>
         </section>
 
-        <!-- Section 2: Safety Protocols (Chart) -->
-        <section>
-            <div class="text-center mb-12">
-                <h2 class="text-4xl font-bold text-white mb-4">1. Safety: Terminal Permissions</h2>
-                <p class="text-slate-400 max-w-2xl mx-auto">
-                    The biggest risk in agentic IDEs is the execution of destructive commands. Configuring your terminal permissions is the first line of defense against accidents like <code class="bg-slate-700 px-2 py-1 rounded text-red-400">rm -rf</code>.
+        <!-- Safety Visualization -->
+        <section id="safety" class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6">
+                <h2 class="text-3xl font-bold font-mono border-l-4 border-neon-blue pl-4">01_TERMINAL_SAFETY</h2>
+                <p class="text-slate-400 text-lg">
+                    The agent is powerful, but blind. Giving it "Turbo" access is like giving a toddler a flamethrower.
                 </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                <div class="bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700">
-                    <div class="chart-container">
-                        <canvas id="safetyChart"></canvas>
+                
+                <div class="space-y-4 pt-4">
+                    <div class="flex items-center gap-4 p-4 rounded-lg bg-red-500/5 border border-red-500/20 hover:bg-red-500/10 transition-colors cursor-default">
+                        <div class="text-red-400 font-mono font-bold w-16">TURBO</div>
+                        <div class="text-sm text-slate-400">Unrestricted root access. High risk of data loss.</div>
                     </div>
-                </div>
-                <div class="space-y-6">
-                    <div class="bg-slate-800/50 p-6 rounded-lg border-l-4 border-red-500">
-                        <h3 class="text-xl font-bold text-red-400 mb-2">Turbo Mode (High Risk)</h3>
-                        <p class="text-sm text-slate-300">Allows the agent to execute commands without approval. Highly dangerous for complex tasks where the agent might hallucinate destructive flags.</p>
+                    <div class="flex items-center gap-4 p-4 rounded-lg bg-blue-500/5 border border-blue-500/20 hover:bg-blue-500/10 transition-colors cursor-default">
+                        <div class="text-blue-400 font-mono font-bold w-16">AUTO</div>
+                        <div class="text-sm text-slate-400">Pauses for critical commands. The balanced choice.</div>
                     </div>
-                    <div class="bg-slate-800/50 p-6 rounded-lg border-l-4 border-yellow-400">
-                        <h3 class="text-xl font-bold text-yellow-400 mb-2">Auto Mode (Recommended)</h3>
-                        <p class="text-sm text-slate-300">The agent acts autonomously but pauses to ask for permission before running sensitive commands (network requests, file deletions).</p>
-                    </div>
-                    <div class="bg-slate-800/50 p-6 rounded-lg border-l-4 border-emerald-500">
-                        <h3 class="text-xl font-bold text-emerald-400 mb-2">Off / Manual (Safest)</h3>
-                        <p class="text-sm text-slate-300">Every single terminal command requires your explicit click to approve. Best for critical production environments.</p>
+                    <div class="flex items-center gap-4 p-4 rounded-lg bg-green-500/5 border border-green-500/20 hover:bg-green-500/10 transition-colors cursor-default">
+                        <div class="text-green-400 font-mono font-bold w-16">OFF</div>
+                        <div class="text-sm text-slate-400">Manual approval for everything. Production safe.</div>
                     </div>
                 </div>
             </div>
-        </section>
-
-        <!-- Section 3: Consistency (Radar Chart) -->
-        <section class="bg-slate-800 rounded-3xl p-8 md:p-12 shadow-2xl border border-slate-700">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                <div>
-                    <h2 class="text-4xl font-bold text-white mb-6">2. Consistency: Planning Mode</h2>
-                    <p class="text-slate-300 mb-6 leading-relaxed">
-                        Antigravity defaults to "Fast Mode," which optimizes for speed but often leads to spaghetti code. To ensure consistency, you must toggle to <strong>"Planning Mode"</strong>. This forces the agent to generate a task list and implementation strategy before writing a single line of code.
-                    </p>
-                    <ul class="space-y-4 mb-8">
-                        <li class="flex items-start">
-                            <span class="text-cyan-400 mr-3 text-xl">&#10004;</span>
-                            <span class="text-slate-300">Forces generation of a Task List Artifact.</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-cyan-400 mr-3 text-xl">&#10004;</span>
-                            <span class="text-slate-300">Reads your <code>.cursorrules</code> or System Prompt first.</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-cyan-400 mr-3 text-xl">&#10004;</span>
-                            <span class="text-slate-300">Prevents context-switching hallucinations.</span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="flex flex-col items-center justify-center">
-                    <h3 class="text-xl font-semibold text-slate-400 mb-4">Fast Mode vs. Planning Mode</h3>
-                    <div class="chart-container">
-                        <canvas id="consistencyRadar"></canvas>
-                    </div>
-                    <p class="text-xs text-center text-slate-500 mt-4">Planning Mode sacrifices raw speed for massive gains in accuracy and safety.</p>
+            
+            <div class="glass-panel p-6 rounded-2xl">
+                <div class="chart-container">
+                    <canvas id="safetyChart"></canvas>
                 </div>
             </div>
         </section>
 
-        <!-- Section 4: Accuracy (Donut Chart) -->
-        <section>
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold text-white mb-4">3. Accuracy: The Verification Loop</h2>
-                <p class="text-slate-400 max-w-2xl mx-auto">
-                    Do not trust the agent blindly. Antigravity introduces "Artifacts"—tangible outputs like plans and browser recordings. Your role shifts to verifying these artifacts before finalizing code.
+        <!-- Consistency Radar -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center lg:flex-row-reverse">
+             <div class="glass-panel p-6 rounded-2xl lg:order-1">
+                <div class="chart-container flex items-center justify-center">
+                    <canvas id="consistencyRadar"></canvas>
+                </div>
+            </div>
+            
+            <div class="space-y-6 lg:order-2">
+                <h2 class="text-3xl font-bold font-mono border-l-4 border-neon-purple pl-4">02_PLANNING_MODE</h2>
+                <p class="text-slate-400 text-lg">
+                    Speed is the enemy of structure. Toggling "Planning Mode" forces the agent to generate a <code>Task List Artifact</code> first.
                 </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                <div class="order-2 md:order-1">
-                    <div class="chart-container">
-                        <canvas id="accuracyDonut"></canvas>
-                    </div>
-                </div>
-                <div class="order-1 md:order-2 space-y-8">
-                    <div class="relative pl-8 border-l-2 border-violet-500">
-                        <h3 class="text-2xl font-bold text-violet-400 mb-2">Review Implementation Plans</h3>
-                        <p class="text-slate-300">When the agent produces a plan, read it. If it suggests an outdated library, edit the artifact directly. Treat the plan as a contract.</p>
-                    </div>
-                    <div class="relative pl-8 border-l-2 border-pink-500">
-                        <h3 class="text-2xl font-bold text-pink-400 mb-2">Visual Verification</h3>
-                        <p class="text-slate-300">Ask the agent to "Take a screenshot of the login page." Reviewing a visual proof is far more accurate than parsing text logs for errors.</p>
-                    </div>
+                <div class="bg-slate-900 rounded-lg p-6 font-mono text-xs md:text-sm text-slate-300 border border-slate-800 shadow-inner">
+                    <span class="text-slate-500"># The Old Way (Fast Mode)</span><br>
+                    <span class="text-red-400">- Agent writes spaghetti code immediately.</span><br>
+                    <span class="text-red-400">- Hallucinates dependencies.</span><br><br>
+                    
+                    <span class="text-slate-500"># The Antigravity Way (Planning Mode)</span><br>
+                    <span class="text-green-400">+ Generates Implementation Plan.</span><br>
+                    <span class="text-green-400">+ Reads .cursorrules.</span><br>
+                    <span class="text-green-400">+ Awaits user architectural approval.</span>
                 </div>
             </div>
         </section>
 
-        <!-- Section 5: The "Follow a Plan" Workflow -->
-        <section class="relative">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold text-white mb-4">4. Strategic Workflow</h2>
-                <p class="text-slate-400">How to code safely by constraining the agent to a rigid trajectory.</p>
+        <!-- Accuracy Donut -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6">
+                <h2 class="text-3xl font-bold font-mono border-l-4 border-neon-pink pl-4">03_VERIFICATION_LOOP</h2>
+                <p class="text-slate-400 text-lg">
+                    Spend your time reviewing plans, not debugging syntax. 
+                </p>
+                <ul class="space-y-4">
+                    <li class="flex items-start gap-3">
+                        <span class="flex-shrink-0 w-6 h-6 rounded-full bg-neon-pink/20 text-neon-pink flex items-center justify-center text-xs font-mono">1</span>
+                        <span class="text-slate-300">Read the <strong>Plan Artifact</strong>. Edit it like a Google Doc.</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="flex-shrink-0 w-6 h-6 rounded-full bg-neon-pink/20 text-neon-pink flex items-center justify-center text-xs font-mono">2</span>
+                        <span class="text-slate-300">Ask for <strong>Browser Screenshots</strong> to verify UI.</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="flex-shrink-0 w-6 h-6 rounded-full bg-neon-pink/20 text-neon-pink flex items-center justify-center text-xs font-mono">3</span>
+                        <span class="text-slate-300">Only approve code execution after visual proof.</span>
+                    </li>
+                </ul>
+            </div>
+             <div class="glass-panel p-6 rounded-2xl">
+                <div class="chart-container flex items-center justify-center">
+                    <canvas id="accuracyDonut"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Workflow Timeline (Redesigned) -->
+        <section class="space-y-12">
+            <div class="text-center">
+                <h2 class="text-3xl font-bold font-mono mb-4">04_EXECUTION_PIPELINE</h2>
+                <p class="text-slate-400">The "Git Flow" for autonomous agents.</p>
             </div>
 
-            <div class="relative max-w-4xl mx-auto">
-                <div class="timeline-line hidden md:block"></div>
+            <div class="relative max-w-3xl mx-auto pl-8 md:pl-0">
+                <!-- Vertical Line -->
+                <div class="absolute left-0 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 via-purple-500 to-pink-500 transform md:-translate-x-1/2 opacity-30"></div>
 
                 <!-- Step 1 -->
-                <div class="relative md:grid md:grid-cols-2 gap-12 mb-12 items-center">
-                    <div class="md:text-right pr-6 mb-4 md:mb-0">
-                        <h3 class="text-2xl font-bold text-cyan-400">Draft Master Prompt</h3>
-                        <p class="text-slate-400 mt-2">Start with a high-level architectural prompt defining the goal.</p>
+                <div class="relative md:flex items-center justify-between group mb-12">
+                    <div class="md:w-5/12 md:text-right md:pr-8">
+                        <h3 class="text-xl font-bold text-white group-hover:text-neon-blue transition-colors">Draft Master Prompt</h3>
+                        <p class="text-sm text-slate-400 mt-2">Define the architecture. Don't ask for code yet. Ask for a structure.</p>
                     </div>
-                    <div class="hidden md:block timeline-dot"></div>
-                    <div class="pl-6 md:pl-0">
-                        <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 text-sm font-mono text-slate-300">
-                            "Build a Python Flask app for honey inventory using SQLite..."
+                    <div class="absolute left-[-5px] md:left-1/2 md:transform md:-translate-x-1/2 w-3 h-3 bg-slate-950 border-2 border-neon-blue rounded-full z-10 group-hover:scale-150 transition-transform box-content"></div>
+                    <div class="md:w-5/12 md:pl-8 mt-4 md:mt-0 opacity-50 group-hover:opacity-100 transition-opacity">
+                        <div class="font-mono text-xs bg-slate-900 p-3 rounded border border-white/5">
+                            > "Build a Python honey inventory system..."
                         </div>
                     </div>
                 </div>
 
                 <!-- Step 2 -->
-                <div class="relative md:grid md:grid-cols-2 gap-12 mb-12 items-center">
-                    <div class="md:text-right pr-6 mb-4 md:mb-0 md:order-1">
-                         <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 text-sm font-mono text-slate-300">
-                            1. Setup venv<br>2. Create schema.sql<br>3. <span class="text-red-400 line-through">Install React</span> (Deleted)
+                <div class="relative md:flex items-center justify-between group mb-12">
+                    <div class="md:w-5/12 md:text-right md:pr-8 md:order-1 opacity-50 group-hover:opacity-100 transition-opacity hidden md:block">
+                        <div class="font-mono text-xs bg-slate-900 p-3 rounded border border-white/5 text-right">
+                             [ ] Install React (Deleted)<br>
+                             [x] Setup SQLite
                         </div>
                     </div>
-                    <div class="hidden md:block timeline-dot md:order-2"></div>
-                    <div class="pl-6 md:pl-0 md:order-3">
-                         <h3 class="text-2xl font-bold text-violet-400">Freeze Scope</h3>
-                        <p class="text-slate-400 mt-2">The agent generates a Task List. Review it. Delete unnecessary steps (features creep) before approval.</p>
+                    <div class="absolute left-[-5px] md:left-1/2 md:transform md:-translate-x-1/2 w-3 h-3 bg-slate-950 border-2 border-neon-purple rounded-full z-10 group-hover:scale-150 transition-transform md:order-2 box-content"></div>
+                    <div class="md:w-5/12 md:pl-8 mt-4 md:mt-0 md:order-3">
+                         <h3 class="text-xl font-bold text-white group-hover:text-neon-purple transition-colors">Freeze Scope</h3>
+                        <p class="text-sm text-slate-400 mt-2">Review the Task List Artifact. Delete unnecessary features (scope creep) before approving.</p>
                     </div>
                 </div>
 
                 <!-- Step 3 -->
-                <div class="relative md:grid md:grid-cols-2 gap-12 items-center">
-                    <div class="md:text-right pr-6 mb-4 md:mb-0">
-                        <h3 class="text-2xl font-bold text-pink-400">Execute Step-by-Step</h3>
-                        <p class="text-slate-400 mt-2">Do not run all. Approve one task. Verify the output. Then proceed.</p>
+                <div class="relative md:flex items-center justify-between group">
+                    <div class="md:w-5/12 md:text-right md:pr-8">
+                        <h3 class="text-xl font-bold text-white group-hover:text-neon-pink transition-colors">Step-by-Step Exec</h3>
+                        <p class="text-sm text-slate-400 mt-2">Approve one task. Verify output. Then proceed. Never "Run All".</p>
                     </div>
-                    <div class="hidden md:block timeline-dot"></div>
-                    <div class="pl-6 md:pl-0">
-                        <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 text-sm font-mono text-slate-300">
-                            <span class="text-emerald-400">&#10004;</span> Task 1 Complete.<br>
-                            <span class="text-emerald-400">&#10004;</span> Tests Passed.<br>
-                            <span class="text-yellow-400">...</span> Awaiting approval for Task 2.
+                    <div class="absolute left-[-5px] md:left-1/2 md:transform md:-translate-x-1/2 w-3 h-3 bg-slate-950 border-2 border-neon-pink rounded-full z-10 group-hover:scale-150 transition-transform box-content"></div>
+                    <div class="md:w-5/12 md:pl-8 mt-4 md:mt-0 opacity-50 group-hover:opacity-100 transition-opacity">
+                        <div class="font-mono text-xs bg-slate-900 p-3 rounded border border-white/5">
+                            > Task 1: DONE<br>
+                            > Task 2: WAITING...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Console Section -->
+        <section id="tools" class="scroll-mt-24">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold font-mono">05_AI_CONSOLE</h2>
+                <p class="text-slate-400">Powered by Google Gemini 2.5 Flash</p>
+            </div>
+
+            <!-- API Key Input (Styled) -->
+            <div class="max-w-xl mx-auto mb-10">
+                <div class="glass-panel rounded-xl p-1 flex items-center group focus-within:ring-2 focus-within:ring-neon-blue/50 transition-all">
+                    <div class="pl-4 text-slate-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                        </svg>
+                    </div>
+                    <input type="password" id="userApiKey" placeholder="Paste Gemini API Key (Required for AI Tools)" 
+                        class="w-full bg-transparent border-none focus:ring-0 text-white placeholder-slate-600 px-4 py-3 text-sm font-mono outline-none">
+                </div>
+                <div class="text-center mt-2">
+                    <a href="https://aistudio.google.com" target="_blank" class="text-xs text-neon-blue hover:underline">Get a free key here</a>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Risk Console -->
+                <div class="glass-panel rounded-xl overflow-hidden flex flex-col h-96">
+                    <div class="bg-slate-900/50 px-4 py-2 border-b border-white/5 flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500/50"></div>
+                        <span class="text-xs font-mono text-slate-400">risk_analyzer.exe</span>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-xs text-slate-500 font-mono mb-4"># Enter a terminal command to evaluate safety risk</p>
+                        <div class="flex-1 overflow-y-auto mb-4 custom-scroll" id="riskOutputWrapper">
+                            <div id="riskOutput" class="text-sm font-mono text-green-400 whitespace-pre-wrap hidden"></div>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="text-neon-blue font-mono py-2">$</span>
+                            <input type="text" id="riskInput" placeholder="rm -rf /var/www" 
+                                class="w-full bg-transparent border-b border-slate-700 focus:border-neon-blue focus:outline-none text-white font-mono py-2">
+                            <button onclick="analyzeRisk()" id="riskBtn" class="text-xs bg-slate-800 hover:bg-slate-700 text-white px-4 rounded transition-colors border border-white/10 font-mono">RUN</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Planner Console -->
+                <div class="glass-panel rounded-xl overflow-hidden flex flex-col h-96">
+                    <div class="bg-slate-900/50 px-4 py-2 border-b border-white/5 flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-full bg-purple-500/50"></div>
+                        <span class="text-xs font-mono text-slate-400">agent_planner.py</span>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-xs text-slate-500 font-mono mb-4"># Describe project to generate Task Artifact</p>
+                         <div class="flex-1 overflow-y-auto mb-4 custom-scroll" id="planOutputWrapper">
+                            <div id="planOutput" class="text-sm font-mono text-purple-300 whitespace-pre-wrap hidden"></div>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="text-neon-purple font-mono py-2">>>></span>
+                            <input type="text" id="planInput" placeholder="React Crypto Dashboard..." 
+                                class="w-full bg-transparent border-b border-slate-700 focus:border-neon-purple focus:outline-none text-white font-mono py-2">
+                             <button onclick="generatePlan()" id="planBtn" class="text-xs bg-slate-800 hover:bg-slate-700 text-white px-4 rounded transition-colors border border-white/10 font-mono">GEN</button>
                         </div>
                     </div>
                 </div>
@@ -269,154 +379,79 @@
             </div>
         </section>
 
-        <!-- New Section: Gemini AI Tools -->
-        <section class="mt-24 pt-12 border-t border-slate-700">
-            <div class="text-center mb-12">
-                <h2 class="text-4xl font-bold text-white mb-4">5. Interactive AI Tools</h2>
-                <p class="text-slate-400">Powered by Google Gemini 2.5 Flash</p>
-                <div class="max-w-md mx-auto mt-6">
-                    <label class="block text-sm text-slate-400 mb-2 text-left">Gemini API Key (Required for AI features)</label>
-                    <input type="password" id="userApiKey" placeholder="Paste your API Key here..." 
-                        class="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500 transition-colors">
-                    <p class="text-xs text-slate-500 mt-2 text-left">Get a free key at <a href="https://aistudio.google.com" target="_blank" class="text-cyan-400 hover:underline">aistudio.google.com</a></p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Tool 1: Risk Analyzer -->
-                <div class="bg-slate-800 p-8 rounded-2xl border border-slate-700 shadow-xl flex flex-col">
-                    <h3 class="text-2xl font-bold text-cyan-400 mb-4">🛡️ Risk Analyzer</h3>
-                    <p class="text-slate-400 mb-6 text-sm">Enter a command or task. Gemini will recommend the safest Terminal Permission (Turbo, Auto, or Off).</p>
-                    
-                    <div class="space-y-4 flex-grow">
-                        <input type="text" id="riskInput" placeholder="e.g., Delete all .tmp files recursively..." 
-                            class="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors">
-                        
-                        <button onclick="analyzeRisk()" id="riskBtn"
-                            class="w-full bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white font-bold py-3 rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20">
-                            <span>Analyze Risk</span>
-                            <span>✨</span>
-                        </button>
-
-                        <div id="riskOutput" class="hidden bg-slate-900 p-4 rounded-lg border border-slate-700 text-slate-300 text-sm leading-relaxed mt-4 custom-scroll max-h-40 overflow-y-auto"></div>
-                    </div>
-                </div>
-
-                <!-- Tool 2: Agent Planner -->
-                <div class="bg-slate-800 p-8 rounded-2xl border border-slate-700 shadow-xl flex flex-col">
-                    <h3 class="text-2xl font-bold text-violet-400 mb-4">📝 Agent Planner</h3>
-                    <p class="text-slate-400 mb-6 text-sm">Describe a project. Gemini will generate a "Planning Mode" Task List Artifact to get you started safely.</p>
-                    
-                    <div class="space-y-4 flex-grow">
-                        <input type="text" id="planInput" placeholder="e.g., A React dashboard for crypto tracking..." 
-                            class="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 transition-colors">
-                        
-                        <button onclick="generatePlan()" id="planBtn"
-                            class="w-full bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 text-white font-bold py-3 rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg shadow-violet-500/20">
-                            <span>Generate Plan</span>
-                            <span>✨</span>
-                        </button>
-
-                        <div id="planOutput" class="hidden bg-slate-900 p-4 rounded-lg border border-slate-700 text-slate-300 text-sm font-mono whitespace-pre-wrap mt-4 custom-scroll max-h-60 overflow-y-auto"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Footer / Checklist -->
-        <footer class="mt-24 pt-12 border-t border-slate-800">
-            <h2 class="text-3xl font-bold text-center text-white mb-8">Summary Checklist</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-                <div class="bg-slate-800 p-6 rounded-lg text-center border-b-4 border-cyan-500">
-                    <div class="text-4xl mb-4">🛡️</div>
-                    <h3 class="text-lg font-bold text-white mb-2">Safety</h3>
-                    <p class="text-slate-400 text-sm">Set Terminal to <strong>Auto</strong>. Always sandbox in a virtual env.</p>
-                </div>
-                <div class="bg-slate-800 p-6 rounded-lg text-center border-b-4 border-violet-500">
-                    <div class="text-4xl mb-4">📝</div>
-                    <h3 class="text-lg font-bold text-white mb-2">Consistency</h3>
-                    <p class="text-slate-400 text-sm">Use <strong>Planning Mode</strong>. Define rules in System Prompts.</p>
-                </div>
-                <div class="bg-slate-800 p-6 rounded-lg text-center border-b-4 border-pink-500">
-                    <div class="text-4xl mb-4">👁️</div>
-                    <h3 class="text-lg font-bold text-white mb-2">Accuracy</h3>
-                    <p class="text-slate-400 text-sm">Edit Task Lists. Request <strong>screenshots</strong> for verification.</p>
-                </div>
-            </div>
-            <div class="text-center mt-12 text-slate-600 text-sm">
-                Generated for the Antigravity Developer Guide
-            </div>
-        </footer>
-
     </main>
 
+    <!-- Footer -->
+    <footer class="border-t border-white/5 bg-slate-950/50 backdrop-blur text-center py-12">
+        <p class="text-slate-500 text-sm font-mono">
+            Generated by Google Gemini 2.5 Flash
+        </p>
+    </footer>
+
     <script>
-        // --- CHART UTILITIES ---
-        function wrapText(str) {
-            if (str.length <= 16) return str;
-            const words = str.split(' ');
-            const lines = [];
-            let currentLine = words[0];
-
-            for (let i = 1; i < words.length; i++) {
-                if (currentLine.length + 1 + words[i].length <= 16) {
-                    currentLine += ' ' + words[i];
-                } else {
-                    lines.push(currentLine);
-                    currentLine = words[i];
-                }
-            }
-            lines.push(currentLine);
-            return lines;
-        }
-
-        const tooltipConfig = {
-            callbacks: {
-                title: function(tooltipItems) {
-                    const item = tooltipItems[0];
-                    let label = item.chart.data.labels[item.dataIndex];
-                    if (Array.isArray(label)) {
-                        return label.join(' ');
-                    } else {
-                        return label;
-                    }
-                }
-            }
-        };
-
+        // --- CHART CONFIGURATION ---
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.font.family = 'Inter';
+        
         const commonOptions = {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    labels: { color: '#cbd5e1' }
+                    labels: { color: '#e2e8f0', font: { size: 12, family: 'Inter' }, usePointStyle: true, boxWidth: 6 }
                 },
-                tooltip: tooltipConfig
+                tooltip: {
+                    backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                    titleColor: '#f8fafc',
+                    bodyColor: '#cbd5e1',
+                    padding: 12,
+                    borderColor: 'rgba(255,255,255,0.1)',
+                    borderWidth: 1,
+                    displayColors: false,
+                    callbacks: {
+                        title: function(context) {
+                            let label = context[0].label;
+                            // Basic wrapping for tooltip title
+                            return label.length > 20 ? label.match(/.{1,20}(\s|$)/g).join('\n') : label;
+                        }
+                    }
+                }
             }
         };
 
-        // --- CHARTS ---
         // 1. Safety Chart
         const ctxSafety = document.getElementById('safetyChart').getContext('2d');
+        // Create gradients
+        const gradRed = ctxSafety.createLinearGradient(0, 0, 400, 0);
+        gradRed.addColorStop(0, '#f87171'); gradRed.addColorStop(1, '#ef4444');
+        const gradBlue = ctxSafety.createLinearGradient(0, 0, 400, 0);
+        gradBlue.addColorStop(0, '#38bdf8'); gradBlue.addColorStop(1, '#0ea5e9');
+        const gradGreen = ctxSafety.createLinearGradient(0, 0, 400, 0);
+        gradGreen.addColorStop(0, '#4ade80'); gradGreen.addColorStop(1, '#22c55e');
+
         new Chart(ctxSafety, {
             type: 'bar',
             data: {
-                labels: [wrapText('Turbo (Unsafe)'), wrapText('Auto (Recommended)'), wrapText('Off (Manual)')],
+                labels: ['Turbo (High Risk)', 'Auto (Balanced)', 'Off (Safe)'],
                 datasets: [{
-                    label: 'Risk Level (0-100)',
-                    data: [90, 20, 5],
-                    backgroundColor: ['rgba(244, 114, 182, 0.8)', 'rgba(34, 211, 238, 0.8)', 'rgba(16, 185, 129, 0.8)'],
-                    borderColor: ['#f472b6', '#22d3ee', '#10b981'],
-                    borderWidth: 1
+                    label: 'Risk Score',
+                    data: [95, 25, 5],
+                    backgroundColor: [gradRed, gradBlue, gradGreen],
+                    borderRadius: 6,
+                    barThickness: 40
                 }]
             },
             options: {
                 ...commonOptions,
                 indexAxis: 'y',
                 scales: {
-                    x: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
-                    y: { grid: { display: false }, ticks: { color: '#f8fafc' } }
-                }
+                    x: { display: false, max: 100 },
+                    y: { 
+                        grid: { display: false },
+                        ticks: { color: '#fff', font: { weight: '600' } }
+                    }
+                },
+                plugins: { legend: { display: false } }
             }
         });
 
@@ -425,30 +460,32 @@
         new Chart(ctxRadar, {
             type: 'radar',
             data: {
-                labels: [wrapText('Code Speed'), wrapText('Safety Check'), wrapText('Context Awareness'), wrapText('Plan Adherence'), wrapText('Debugging Ease')],
+                labels: ['Speed', 'Safety', 'Context', 'Structure', 'Debug'],
                 datasets: [{
                     label: 'Fast Mode',
-                    data: [95, 20, 30, 25, 40],
-                    fill: true,
-                    backgroundColor: 'rgba(244, 114, 182, 0.2)',
+                    data: [95, 20, 30, 20, 40],
+                    backgroundColor: 'rgba(244, 114, 182, 0.1)',
                     borderColor: '#f472b6',
-                    pointBackgroundColor: '#f472b6'
+                    borderWidth: 2,
+                    pointBackgroundColor: '#f472b6',
+                    pointRadius: 3
                 }, {
                     label: 'Planning Mode',
-                    data: [50, 95, 90, 95, 85],
-                    fill: true,
-                    backgroundColor: 'rgba(34, 211, 238, 0.2)',
-                    borderColor: '#22d3ee',
-                    pointBackgroundColor: '#22d3ee'
+                    data: [50, 90, 95, 95, 85],
+                    backgroundColor: 'rgba(56, 189, 248, 0.2)',
+                    borderColor: '#38bdf8',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#38bdf8',
+                    pointRadius: 3
                 }]
             },
             options: {
                 ...commonOptions,
                 scales: {
                     r: {
-                        angleLines: { color: '#475569' },
-                        grid: { color: '#334155' },
-                        pointLabels: { color: '#cbd5e1', font: { size: 12 } },
+                        angleLines: { color: 'rgba(255,255,255,0.05)' },
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        pointLabels: { color: '#cbd5e1', font: { size: 11 } },
                         ticks: { display: false, backdropColor: 'transparent' }
                     }
                 }
@@ -460,115 +497,98 @@
         new Chart(ctxDonut, {
             type: 'doughnut',
             data: {
-                labels: [wrapText('Drafting Prompt'), wrapText('Reviewing Plans'), wrapText('Verifying Artifacts'), wrapText('Agent Coding')],
+                labels: ['Drafting', 'Reviewing Plans', 'Verifying', 'Coding'],
                 datasets: [{
-                    label: 'Ideal Time Allocation',
                     data: [20, 30, 30, 20],
-                    backgroundColor: ['#a78bfa', '#22d3ee', '#f472b6', '#334155'],
+                    backgroundColor: ['#c084fc', '#38bdf8', '#f472b6', '#1e293b'],
                     borderWidth: 0,
-                    hoverOffset: 10
+                    hoverOffset: 15
                 }]
             },
             options: {
                 ...commonOptions,
-                cutout: '60%',
+                cutout: '70%',
                 plugins: {
-                    ...commonOptions.plugins,
-                    legend: { position: 'right', labels: { color: '#cbd5e1', font: { size: 14 } } }
+                    legend: { position: 'bottom', labels: { padding: 20, usePointStyle: true } }
                 }
             }
         });
 
-        // --- GEMINI INTEGRATION ---
+        // --- GEMINI AI LOGIC ---
         
-        // This is empty by default for GitHub Pages deployment.
-        // The user must provide a key in the UI.
-        const defaultApiKey = ""; 
+        // Typing effect utility
+        function typeWriter(elementId, text, speed = 10) {
+            const el = document.getElementById(elementId);
+            el.innerHTML = '';
+            el.classList.remove('hidden');
+            let i = 0;
+            function type() {
+                if (i < text.length) {
+                    el.innerHTML += text.charAt(i);
+                    i++;
+                    // Auto scroll to bottom
+                    const wrapper = el.parentElement;
+                    wrapper.scrollTop = wrapper.scrollHeight;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
 
         async function callGemini(prompt) {
-            // Priority: UI Input > Hardcoded Variable
-            const uiKey = document.getElementById('userApiKey').value.trim();
-            const apiKey = uiKey || defaultApiKey;
-
+            const apiKey = document.getElementById('userApiKey').value.trim();
             if (!apiKey) {
-                alert("Please enter a valid Gemini API Key in the 'Interactive AI Tools' section above.");
-                return null;
+                return "Error: API Key missing. Please paste your key in the input field above.";
             }
 
             try {
                 const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }]
-                    })
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
                 });
                 
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error?.message || 'API Error');
-                }
+                if (!response.ok) throw new Error('API Connection Failed');
                 const data = await response.json();
                 return data.candidates[0].content.parts[0].text;
             } catch (error) {
-                console.error(error);
-                return `Error: ${error.message}. Please check your API Key.`;
+                return `System Error: ${error.message}`;
             }
         }
 
         async function analyzeRisk() {
             const input = document.getElementById('riskInput');
             const output = document.getElementById('riskOutput');
-            const btn = document.getElementById('riskBtn');
             const task = input.value.trim();
-
             if (!task) return;
 
             output.classList.remove('hidden');
-            output.innerHTML = '<span class="animate-pulse">Analyzing terminal permissions...</span>';
-            btn.disabled = true;
-            btn.classList.add('opacity-50');
-
-            const prompt = `You are a security expert for the Google Antigravity IDE. 
-            The user wants to perform this task: "${task}".
-            Analyze the safety risk. 
-            Recommend ONE of these Terminal Permissions: 'Off' (Manual Approval), 'Auto' (Ask for sensitive), or 'Turbo' (No approval).
-            Explain why in 1-2 short sentences. Be strict about safety.`;
-
-            const result = await callGemini(prompt);
+            output.innerText = "Analyzing permissions matrix...";
             
-            if (result) output.innerText = result;
-            else output.classList.add('hidden'); // Hide if no result (key error alert shown)
-
-            btn.disabled = false;
-            btn.classList.remove('opacity-50');
+            const prompt = `You are the Google Antigravity Security Mainframe. Analyze this task: "${task}". 
+            Recommend strict Terminal Permission (OFF, AUTO, or TURBO). 
+            Format response as a system log (e.g., [RISK: HIGH] >> Use AUTO). Keep it brief and tech-noir style.`;
+            
+            const result = await callGemini(prompt);
+            typeWriter('riskOutput', result, 20);
         }
 
         async function generatePlan() {
             const input = document.getElementById('planInput');
             const output = document.getElementById('planOutput');
-            const btn = document.getElementById('planBtn');
             const project = input.value.trim();
-
             if (!project) return;
 
             output.classList.remove('hidden');
-            output.innerHTML = '<span class="animate-pulse">Generating Implementation Plan Artifact...</span>';
-            btn.disabled = true;
-            btn.classList.add('opacity-50');
+            output.innerText = "Initializing Planning Mode...";
 
-            const prompt = `You are the Google Antigravity Agent operating in 'Planning Mode'. 
-            The user wants to build: "${project}". 
-            Generate a concise, numbered 5-step 'Task List Artifact' for this project. 
-            Focus on architectural setup and safety checks. Do not write code, just the plan steps.`;
+            const prompt = `You are the Google Antigravity Architect Agent. 
+            User Project: "${project}". 
+            Generate a 5-step Implementation Plan Artifact. 
+            Format as a raw text list. No markdown bolding. Just clean text steps.`;
 
             const result = await callGemini(prompt);
-            
-            if (result) output.innerText = result;
-            else output.classList.add('hidden');
-
-            btn.disabled = false;
-            btn.classList.remove('opacity-50');
+            typeWriter('planOutput', result, 10);
         }
     </script>
 </body>
