@@ -332,6 +332,10 @@
                 <div class="text-center mt-2">
                     <p class="text-xs text-slate-400 mb-1">This repository does not include a preconfigured API key — you must obtain one and paste it above.</p>
                     <a href="https://aistudio.google.com" target="_blank" class="text-xs text-neon-blue hover:underline">Get a Gemini API key (signup required)</a>
+                    <div class="flex items-center justify-center gap-2 mt-3">
+                        <input id="demoMode" type="checkbox" class="h-4 w-4 text-neon-blue rounded" />
+                        <label for="demoMode" class="text-xs text-slate-400">Enable Demo Mode (use canned AI responses; no API key required)</label>
+                    </div>
                 </div>
             </div>
 
@@ -536,10 +540,29 @@
             type();
         }
 
+        async function mockGeminiResponse(prompt) {
+            // Very small set of canned responses for demo mode.
+            await new Promise(r => setTimeout(r, 400)); // simulate latency
+            const p = prompt.toLowerCase();
+            if (p.includes('recommend') || p.includes('analyze') || p.includes('permission') || p.includes('risk')) {
+                return `[RISK: HIGH] >> Use AUTO. The command appears to delete files or modify system state without safeguards.`;
+            }
+            if (p.includes('generate') || p.includes('planning') || p.includes('implementation') || p.includes('project')) {
+                // extract a short project hint if present
+                const match = prompt.match(/\"([^\"]+)\"/);
+                const proj = match ? match[1] : 'your project';
+                return `1) Initialize repository and virtual environment for ${proj}\n2) Define schema and core modules\n3) Add tests and CI with sandboxed runners\n4) Run a single task and verify artifacts\n5) Freeze scope and iterate safely`;
+            }
+            return `Demo response: "${prompt.slice(0,120)}"`;
+        }
+
         async function callGemini(prompt) {
             const apiKey = document.getElementById('userApiKey').value.trim();
+            const demoEnabled = document.getElementById('demoMode')?.checked;
+
             if (!apiKey) {
-                return "Error: API Key missing. Please paste your key in the input field above.";
+                if (demoEnabled) return mockGeminiResponse(prompt);
+                return "Error: API Key missing. Please paste your key in the input field above or enable Demo Mode.";
             }
 
             try {
@@ -549,10 +572,15 @@
                     body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
                 });
                 
-                if (!response.ok) throw new Error('API Connection Failed');
+                if (!response.ok) {
+                    const errText = await response.text();
+                    throw new Error(errText || 'API Connection Failed');
+                }
                 const data = await response.json();
-                return data.candidates[0].content.parts[0].text;
+                return data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response';
             } catch (error) {
+                // If demo is enabled, fall back to mock responses when API fails
+                if (demoEnabled) return mockGeminiResponse(prompt);
                 return `System Error: ${error.message}`;
             }
         }
